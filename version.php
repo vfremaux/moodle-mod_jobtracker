@@ -17,21 +17,22 @@
 /**
  * Version details.
  *
- * @package    mod_jobtracker
- * @category   mod
- * @author     Valery Fremaux (valery.fremaux@gmail.com)
- * @copyright  2013 onwards Valery Fremaux (valery.fremaux@gmail.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_jobtracker
+ * @category    mod
+ * @author      Valery Fremaux (valery.fremaux@gmeil.com)
+ * @copyright   2014 onwards Valery Fremaux (valery.fremaux@gmeil.com)
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version  = 2015011902;  // The current module version (Date: YYYYMMDDXX)
-$plugin->requires = 2014110400;
+$plugin->requires = 20150505000;
 $plugin->component = 'mod_jobtracker';   // Full name of the plugin (used for diagnostics)
+$plugin->cron     = 0;           // Period for cron to check this module (secs)
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = '2.8.0 (Build 2015011902)';
+$plugin->release = '2.9.0 (Build 2015011902)';
 $plugin->dependencies = array('local_vflibs' => 2015053000);
 
 // Non moodle attributes.
-$plugin->codeincrement = '2.8.0000';
+$plugin->codeincrement = '2.9.0000';
