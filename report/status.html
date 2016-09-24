@@ -1,0 +1,112 @@
+<?php
+
+require_once($CFG->dirroot.'/mod/jobtracker/locallib.php');
+
+echo $OUTPUT->heading(get_string('reports', 'jobtracker'), 1);
+echo $OUTPUT->heading(get_string('status', 'jobtracker'), 2);
+
+$tickets = jobtracker_get_stats($jobtracker);
+$statsbyassignee = jobtracker_get_stats_by_assignee($jobtracker);
+$statsbyreporter = jobtracker_get_stats_by_user($jobtracker, 'userid');
+$alltickets = $DB->count_records('jobtracker_job', array('jobtrackerid' => $jobtracker->id));
+
+$STATUSKEYS = jobtracker_get_statuskeys($jobtracker);
+$STATUSCODES = jobtracker_get_statuscodes();
+
+?>
+<table width="100%" cellpadding="20">
+    <tr valign="top">
+        <td width="33%">
+            <?php echo $OUTPUT->heading(get_string('countbystate', 'jobtracker', $alltickets), 3) ?>
+        <table width="80%">
+        <tr>
+            <td width="40%" align="left"><?php print_string('status', 'jobtracker') ?></td>
+            <td width="30%" align="right"><?php print_string('count', 'jobtracker') ?></td>
+            <td width="30%" align="right"></td>
+        </tr>
+        <?php 
+        foreach (array_keys($STATUSKEYS) as $key) {
+            if ($key == JOBTRACK_DEAD && $key == JOBTRACK_CONCLUDED) {
+                continue;
+            }
+        ?>
+        <tr>
+            <td width="40%" align="left" class="status-<?php echo $STATUSCODES[$key] ?>"><?php echo $STATUSKEYS[$key] ?></td>
+            <td width="30%" align="right"><?php echo 0 + @$tickets[$key] ?></td>
+            <td width="30%" align="right"><?php echo ($alltickets) ? sprintf("%2d", ((0 + @$tickets[$key])/$alltickets) * 100) .' %' : '0 %' ; ?></td>
+        </tr>
+        <?php } ?>
+        </table>
+        
+        <table width="80%">
+        <?php 
+        foreach (array_keys($STATUSKEYS) as $key) {
+            if (!($key == JOBTRACK_DEAD && $key == JOBTRACK_CONCLUDED)) {
+                continue;
+            }
+        ?>
+        <tr>
+            <td width="40%" align="left" class="status_<?php echo $STATUSCODES[$key] ?>"><?php echo $STATUSKEYS[$key] ?></td>
+            <td width="30%" align="right"><?php echo 0 + @$tickets[$key] ?></td>
+            <td width="30%" align="right"><?php echo ($alltickets) ? sprintf("%2d", ((0 + @$tickets[$key])/$alltickets) * 100).' %': '0 % '; ?></td>
+        </tr>
+        <?php } ?>
+        </table>
+
+        </td>
+        <td width="33%">
+            <?php echo $OUTPUT->heading(get_string('countbyassignee', 'jobtracker', $alltickets), 3) ?>
+            <?php 
+                if (empty($statsbyassignee)) {
+                    print_string('nojobsorfollowers', 'jobtracker');
+                } else {
+                    echo '<table width="95%" class="generaltable">';
+                    $line = 0;
+                    foreach ($statsbyassignee as $r) {
+                        if (empty($r->name)) {
+                            $r->name = get_string('unassigned', 'jobtracker');
+                        }
+                        echo "<tr class=\"r{$line}\">";
+                        echo "<td width=\"50%\" align=\"left\">{$r->name}</td>";
+                        echo "<td width=\"10%\" align=\"right\" style=\"font-weight:bolder;font-size:1.3em\">{$r->sum}</td>";
+                        echo '<td width="40%">';
+                        foreach ($r->status as $statkey => $subresult) {
+                            $statcode = $STATUSCODES[$statkey];
+                            echo "<span class=\"status-$statcode\">$subresult</span> "; 
+                        }
+                        echo '</td>';
+
+                        echo "</tr>";
+                        $line = ($line + 1) % 2;
+                    }
+                    echo '</table>';
+                }
+            ?>
+        </td>
+        <td width="33%">
+            <?php echo $OUTPUT->heading(get_string('countbyreporter', 'jobtracker', $alltickets), 3) ?>
+            <?php 
+                if (empty($statsbyreporter)) {
+                    print_string('nojobs', 'jobtracker');
+                } else {
+                    echo '<table width="95%" class="generaltable">';
+                    $line = 0;
+                    foreach ($statsbyreporter as $r) {
+                        echo "<tr class=\"r{$line}\">";
+                        echo "<td width=\"50%\" align=\"left\">{$r->name}</td>";
+                        echo "<td width=\"10%\" align=\"right\" style=\"font-weight:bolder;font-size:1.3em\">{$r->sum}</td>";
+                        echo '<td width="40%">';
+                        foreach ($r->status as $statkey => $subresult) {
+                            $statcode = $STATUSCODES[0+$statkey];
+                            echo "<span class=\"status-$statcode\">$subresult</span> "; 
+                        }
+                        echo '</td>';
+                        echo "</tr>";
+                        $line = ($line + 1) % 2;
+                    }
+                    echo '</table>';
+                }
+            ?>
+        </td>
+    </tr>
+</table>

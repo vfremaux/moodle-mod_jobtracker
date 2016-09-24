@@ -1,0 +1,34 @@
+User/roles stories
+====================
+
+Student:
+- can add a self declared opportunity in the list
+- can change the status of opportunity constrained by strict workflow model if strict forced
+- can answer to comments
+- can change priorities
+- can record searches
+* cannot delete opportunities
+* cannot see other people opportunities
+
+Supervisor:
+- can add opportunities to student's own list
+- can change any state but only of students he is supervising (SAME GROUP)
+- can change any state of any student in course (NOGROUPS)
+- can see only his supervised listings and job records (GROUP_SEPARATED)
+- can see all job records (!GROUP_SEPARATED)
+- can access to reports
+- can add to watch list of any read accessible student
+- can delete opportunities where having write capability
+* cannot see own list
+
+Manager:
+- can do all supervisor actions without group restriction
+- can change form structure and manage elements
+
+Administrator:
+- can perform all manager actions
+- can define sitewide shareable elements
+
+Cron:
+- triggers any WAITING_EVENT opportunity to TO_REFRESH state
+- sends periodic report to supervisor of his mentees state, "no move" alarm, "to_refresh" amount threshold alarm

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/jobtracker/db" VERSION="20100610" COMMENT="XMLDB file for Moodle mod/jobtracker"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="jobtracker" COMMENT="jobtracker table retrofitted from MySQL" NEXT="jobtracker_element">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="11" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="course" NEXT="intro"/>
+        <FIELD NAME="intro" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="name" NEXT="introformat"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="intro" NEXT="allownotifications"/>
+        <FIELD NAME="allownotifications" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="introformat" NEXT="ticketprefix"/>
+        <FIELD NAME="ticketprefix" TYPE="char" LENGTH="16" NOTNULL="true" SEQUENCE="false" PREVIOUS="allownotifications" NEXT="timemodified"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="ticketprefix" NEXT="refreshdelay"/>
+        <FIELD NAME="refreshdelay" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timemodified" NEXT="enabledstates" />
+        <FIELD NAME="enabledstates" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="511" SEQUENCE="false" PREVIOUS="refreshdelay" NEXT="completionhasconcluded" />
+        <FIELD NAME="completionhasconcluded" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="enabledstates" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for jobtracker"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="jobtracker_element" COMMENT="jobtracker_element table retrofitted from MySQL" PREVIOUS="jobtracker" NEXT="jobtracker_elementitem">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" PREVIOUS="course" NEXT="description"/>
+        <FIELD NAME="description" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="name" NEXT="type"/>
+        <FIELD NAME="type" TYPE="char" LENGTH="32" NOTNULL="true" SEQUENCE="false" PREVIOUS="description" NEXT="param1"/>
+        <FIELD NAME="param1" TYPE="char" LENGTH="32" NOTNULL="true" SEQUENCE="false" PREVIOUS="type" NEXT="param2"/>
+        <FIELD NAME="param2" TYPE="char" LENGTH="32" NOTNULL="true" SEQUENCE="false" PREVIOUS="param1" NEXT="param3"/>
+        <FIELD NAME="param3" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" PREVIOUS="param2"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for jobtracker_element"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="jobtracker_elementitem" COMMENT="jobtracker_elementitem table retrofitted from MySQL" PREVIOUS="jobtracker_element" NEXT="jobtracker_elementused">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="elementid"/>
+        <FIELD NAME="elementid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" PREVIOUS="elementid" NEXT="description"/>
+        <FIELD NAME="description" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="name" NEXT="sortorder"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="description" NEXT="active"/>
+        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="false" DEFAULT="1" SEQUENCE="false" PREVIOUS="sortorder"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for jobtracker_elementitem"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="jobtracker_elementused" COMMENT="jobtracker_elementused table retrofitted from MySQL" PREVIOUS="jobtracker_elementitem" NEXT="jobtracker_job">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="jobtrackerid"/>
+        <FIELD NAME="jobtrackerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="elementid"/>
+        <FIELD NAME="elementid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="jobtrackerid" NEXT="sortorder"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="elementid" NEXT="canbemodifiedby"/>
+        <FIELD NAME="canbemodifiedby" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="sortorder" NEXT="active"/>
+        <FIELD NAME="active" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="false" DEFAULT="1" SEQUENCE="false" PREVIOUS="canbemodifiedby"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for jobtracker_elementused"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="jobtracker_job" COMMENT="jobtracker_job table retrofitted from MySQL" PREVIOUS="jobtracker_elementused" NEXT="jobtracker_jobattribute">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="jobtrackerid"/>
+        <FIELD NAME="jobtrackerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="company"/>
+        <FIELD NAME="company" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="jobtrackerid" NEXT="contact"/>
+        <FIELD NAME="contact" TYPE="char" LENGTH="80" NOTNULL="true" SEQUENCE="false" PREVIOUS="company" NEXT="contactphone"/>
+        <FIELD NAME="contactphone" TYPE="char" LENGTH="16" NOTNULL="true" SEQUENCE="false" PREVIOUS="contact" NEXT="contactmail"/>
+        <FIELD NAME="contactmail" TYPE="char" LENGTH="80" NOTNULL="true" SEQUENCE="false" PREVIOUS="contactphone" NEXT="position"/>
+        <FIELD NAME="position" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="contactphone" NEXT="description"/>
+        <FIELD NAME="notes" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="position" NEXT="notesformat"/>
+        <FIELD NAME="notesformat" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="notes" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="notesformat" NEXT="lastmodified"/>
+        <FIELD NAME="lastmodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="lastmodified" NEXT="status"/>
+        <FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="userid" NEXT="resolution"/>
+        <FIELD NAME="resolution" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="status" NEXT="resolutionformat"/>
+        <FIELD NAME="resolutionformat" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="resolution" NEXT="resolutionpriority" />
+        <FIELD NAME="resolutionpriority" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="resolutionformat"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for jobtracker_job"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="jobtracker_jobattribute" COMMENT="jobtracker_jobattribute table retrofitted from MySQL" PREVIOUS="jobtracker_job" NEXT="jobtracker_jobcc">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="jobtrackerid"/>
+        <FIELD NAME="jobtrackerid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="jobid"/>
+        <FIELD NAME="jobid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="jobtrackerid" NEXT="elementid"/>
+        <FIELD NAME="elementid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="jobid" NEXT="elementitemid"/>
+        <FIELD NAME="elementitemid" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="elementid" NEXT="timemodified"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="elementitemid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for jobtracker_jobattribute"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="jobtracker_jobcc" COMMENT="jobtracker_jobcc table retrofitted from MySQL" PREVIOUS="jobtracker_jobattribute" NEXT="jobtracker_jobcomment">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="jobtrackerid"/>
+        <FIELD NAME="jobtrackerid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="jobtrackerid" NEXT="jobid"/>
+        <FIELD NAME="jobid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="events"/>
+        <FIELD NAME="events" TYPE="int" LENGTH="3" NOTNULL="false" UNSIGNED="true" DEFAULT="31" SEQUENCE="false" PREVIOUS="jobid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for jobtracker_jobcc" NEXT="unique_assignation"/>
+        <KEY NAME="unique_assignation" TYPE="unique" FIELDS="jobtrackerid, userid, jobid" PREVIOUS="primary"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="jobtracker_jobcomment" COMMENT="jobtracker_jobcomment table retrofitted from MySQL" PREVIOUS="jobtracker_jobcc" NEXT="jobtracker_preferences">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="jobtrackerid"/>
+        <FIELD NAME="jobtrackerid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="jobtrackerid" NEXT="jobid"/>
+        <FIELD NAME="jobid" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="comment"/>
+        <FIELD NAME="comment" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="jobid" NEXT="commentformat"/>
+        <FIELD NAME="commentformat" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="comment" NEXT="datecreated"/>
+        <FIELD NAME="datecreated" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="commentformat"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for jobtracker_jobcomment"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="jobtracker_preferences" COMMENT="jobtracker_preferences table retrofitted from MySQL" PREVIOUS="jobtracker_jobcomment" NEXT="jobtracker_state_change">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="jobtrackerid"/>
+        <FIELD NAME="jobtrackerid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="id" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="jobtrackerid" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="32" NOTNULL="true" SEQUENCE="false" PREVIOUS="userid" NEXT="value"/>
+        <FIELD NAME="value" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="name"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for jobtracker_preferences" NEXT="unique_pref_entry"/>
+        <KEY NAME="unique_pref_entry" TYPE="unique" FIELDS="jobtrackerid, userid, name" PREVIOUS="primary"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="jobtracker_state_change" COMMENT="jobtracker_state_change table retrofitted from MySQL" PREVIOUS="jobtracker_preferences">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="jobtrackerid"/>
+        <FIELD NAME="jobtrackerid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="jobid"/>
+        <FIELD NAME="jobid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="jobtrackerid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="jobid" NEXT="timechange"/>
+        <FIELD NAME="timechange" TYPE="int" LENGTH="11" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="statusfrom"/>
+        <FIELD NAME="statusfrom" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timechange" NEXT="statusto"/>
+        <FIELD NAME="statusto" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="statusfrom"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="mdl_tracstatchan_iss_ix" UNIQUE="false" FIELDS="jobid" NEXT="mdl_tracstatchan_use_ix"/>
+        <INDEX NAME="mdl_tracstatchan_use_ix" UNIQUE="false" FIELDS="userid" PREVIOUS="mdl_tracstatchan_iss_ix" NEXT="mdl_tracstatchan_tra_ix"/>
+        <INDEX NAME="mdl_tracstatchan_tra_ix" UNIQUE="false" FIELDS="jobtrackerid" PREVIOUS="mdl_tracstatchan_use_ix"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

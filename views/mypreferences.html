@@ -1,0 +1,110 @@
+<?php
+
+/**
+ * @package mod-jobtracker
+ * @category mod
+ * @author Valery Fremaux (valery.fremaux@gmail.com)
+ * @date 02/11/2014
+ *
+ * Prints a form for user preferences
+ */
+if (!defined('MOODLE_INTERNAL')) {
+    die('Direct access to this script is forbidden.');    ///  It must be included from view.php in mod/jobtracker
+}
+
+echo '<br/>';
+echo $OUTPUT->heading(get_string('mypreferences', 'jobtracker'));
+echo $OUTPUT->box_start();
+
+jobtracker_loadpreferences($jobtracker->id, $USER->id);
+
+echo '<p>';
+print_string('prefsnote', 'jobtracker');
+echo '</p>';
+?>
+<center>
+<form name="preferencesform" method="post" action="view.php">
+<input type="hidden" name="id" value="<?php p($cm->id) ?>" />
+<input type="hidden" name="what" value="saveprefs" />
+<input type="hidden" name="view" value="profile" />
+<table border="1">
+    <?php if ($jobtracker->enabledstates & JOBTRACK_ENABLED_OPEN) { ?>
+    <tr valign="top">
+        <td align="right" width="33%"><b><?php print_string('unsetwhenopens', 'jobtracker') ?></b></td>
+        <td colspan="3" align="left">
+            <?php echo html_writer::select_yes_no('open', @$USER->jobtrackerprefs->eventmask & JOBTRACK_EVENT_OPEN); ?>
+        </td>
+    </tr>
+    <?php }
+    if ($jobtracker->enabledstates & JOBTRACK_ENABLED_SHORTLIST){ ?>
+    <tr valign="top">
+        <td align="right"><b><?php print_string('unsetwhenshortlist', 'jobtracker') ?></b></td>
+        <td colspan="3" align="left">
+            <?php echo html_writer::select_yes_no('shortlist', @$USER->jobtrackerprefs->eventmask & JOBTRACK_EVENT_SHORTLIST); ?>
+        </td>
+    </tr>
+    <?php }
+    if ($jobtracker->enabledstates & JOBTRACK_ENABLED_WAITINGEVENT){ ?>
+    <tr valign="top">
+        <td align="right"><b><?php print_string('unsetwhenwaits', 'jobtracker') ?></b></td>
+        <td colspan="3" align="left">
+            <?php echo html_writer::select_yes_no('waitingevent', @$USER->jobtrackerprefs->eventmask & JOBTRACK_EVENT_WAITINGEVENT); ?>
+        </td>
+    </tr>
+    <?php }
+    if ($jobtracker->enabledstates & JOBTRACK_ENABLED_TOREFRESH){ ?>
+    <tr valign="top">
+        <td align="right"><b><?php print_string('unsetwhentorefresh', 'jobtracker') ?></b></td>
+        <td colspan="3" align="left">
+            <?php echo html_writer::select_yes_no('torefresh', @$USER->jobtrackerprefs->eventmask & JOBTRACK_EVENT_TOREFRESH); ?>
+        </td>
+    </tr>
+    <?php }
+    if ($jobtracker->enabledstates & JOBTRACK_ENABLED_MEETINGSCHEDULED){ ?>
+    <tr valign="top">
+        <td align="right"><b><?php print_string('unsetwhenscheduled', 'jobtracker') ?></b></td>
+        <td colspan="3" align="left">
+            <?php echo html_writer::select_yes_no('meetingscheduled', @$USER->jobtrackerprefs->eventmask & JOBTRACK_EVENT_MEETINGSCHEDULED); ?>
+        </td>
+    </tr>
+    <?php }
+    if ($jobtracker->enabledstates & JOBTRACK_ENABLED_MEETINGDONE){ ?>
+    <tr valign="top">
+        <td align="right"><b><?php print_string('unsetwhendone', 'jobtracker') ?></b></td>
+        <td colspan="3" align="left">
+            <?php echo html_writer::select_yes_no('meetingdone', @$USER->jobtrackerprefs->eventmask & JOBTRACK_EVENT_MEETINGDONE); ?>
+        </td>
+    </tr>
+    <?php }
+    if ($jobtracker->enabledstates & JOBTRACK_ENABLED_CONCLUDED){ ?>
+    <tr valign="top">
+        <td align="right"><b><?php print_string('unsetwhenconcluded', 'jobtracker') ?></b></td>
+        <td colspan="3" align="left">
+            <?php echo html_writer::select_yes_no('concluded', @$USER->jobtrackerprefs->eventmask & JOBTRACK_EVENT_CONCLUDED); ?>
+        </td>
+    </tr>
+    <?php }
+    if ($jobtracker->enabledstates & JOBTRACK_ENABLED_DEAD){ ?>
+    <tr valign="top">
+        <td align="right"><b><?php print_string('unsetwhendead', 'jobtracker') ?></b></td>
+        <td colspan="3" align="left">
+            <?php echo html_writer::select_yes_no('dead', @$USER->jobtrackerprefs->eventmask & JOBTRACK_EVENT_DEAD); ?>
+        </td>
+    </tr>
+    <?php } ?>
+    <tr valign="top">
+        <td align="right"><b><?php print_string('unsetoncomment', 'jobtracker') ?></b></td>
+        <td colspan="3" align="left">
+            <?php echo html_writer::select_yes_no('oncomment', @$USER->jobtrackerprefs->eventmask & JOBTRACK_ON_COMMENT); ?>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" align="center">
+            <input type="submit" name="go_btn" value="<?php print_string('savechanges') ?>" />
+        </td>
+    </tr>
+</table>
+</form>
+</center>
+<?php
+echo $OUTPUT->box_end();

@@ -1,0 +1,35 @@
+<?php
+
+$STATUSCODES = jobtracker_get_statuscodes();
+
+if ($jobs = $DB->get_records_select('jobtracker_job', " jobtrackerid = ? AND status != ".JOBTRACK_CONCLUDED." AND status != ".JOBTRACK_DEAD." ", array($jobtracker->id), 'status,timecreated')) {
+
+    $prevstate = '';
+    foreach ($jobs as $job) {
+        if ($prevstate != $job->status){
+            echo '<table width="100%" class="jobtracker-printtable">';
+            echo '<tr>';
+                echo '<td class="status-'.$STATUSCODES[$job->status].'" colspan="2">'.$STATUSKEYS[$job->status].'</td>';
+            echo '</tr>';
+            echo '</table>';
+        }
+        echo '<table width="100%" class="jobtracker-printtable">';
+        echo '<tr>';
+        echo '<td class="jobtracker-printtable ticketid" width="20%" align="left">'.$jobtracker->ticketprefix.$job->id.'</td>';
+        echo '<td class="jobtracker-printtable title" align="left">'.$job->company.'</td>';
+        echo '</tr>';
+        echo '<tr>';
+        echo '<td class="jobtracker-printtable position" colspan="2">'.$job->position.'</td>';
+        echo '</tr>';
+        echo '<tr>';
+        echo '<td class="jobtracker-printtable notes" colspan="2">'.$job->notes.'</td>';
+        echo '</tr>';
+        echo '<tr>';
+        echo '<td class="jobtracker-printtable"></td>';
+        echo '<td class="jobtracker-printtable created">'.userdate($job->timecreated).'</td>';
+        echo '</tr>';
+        echo '</table>';
+        $prevstate = $job->status;
+    }
+}
+

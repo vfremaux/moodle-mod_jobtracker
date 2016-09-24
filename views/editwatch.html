@@ -1,0 +1,112 @@
+<?php
+
+/**
+ * @package mod-jobtracker
+ * @category mod
+ * @author Clifford Tham, Valery Fremaux > 1.8
+ * @date 02/12/2007
+ *
+ * A form for updating a watch record
+ */
+
+if (!defined('MOODLE_INTERNAL')) {
+    die('Direct access to this script is forbidden.');    ///  It must be included from view.php in mod/jobtracker
+}
+
+echo $OUTPUT->heading(get_string('editwatch', 'jobtracker'));
+$OUTPUT->box_start('center', '100%', '', '', 'generalbox', 'bugreport');
+$open = ($form->events & JOBTRACK_EVENT_OPEN) ? 'checked="checked"' : '' ;
+$shortlisted = ($form->events & JOBTRACK_EVENT_SHORTLIST) ? 'checked="checked"' : '' ;
+$waiting = ($form->events & JOBTRACK_EVENT_WAITINGEVENT) ? 'checked="checked"' : '' ;
+$scheduled = ($form->events & JOBTRACK_EVENT_MEETINGSCHEDULED) ? 'checked="checked"' : '' ;
+$done = ($form->events & JOBTRACK_EVENT_MEETINGDONE) ? 'checked="checked"' : '' ;
+$concluded = ($form->events & JOBTRACK_EVENT_CONCLUDED) ? 'checked="checked"' : '' ;
+$abandonned = ($form->events & JOBTRACK_EVENT_DEAD) ? 'checked="checked"' : '' ;
+$notopen = ($form->events & JOBTRACK_EVENT_OPEN) ? '' : 'checked="checked"' ;
+$notshortlisted = ($form->events & JOBTRACK_EVENT_SHORTLIST) ? '' : 'checked="checked"';
+$notwaiting = ($form->events & JOBTRACK_EVENT_WAITINGEVENT) ? '' : 'checked="checked"';
+$notscheduled = ($form->events & JOBTRACK_EVENT_MEETINGSCHEDULED) ? '' : 'checked="checked"';
+$notdone = ($form->events & JOBTRACK_EVENT_MEETINGDONE) ? '' : 'checked="checked"';
+$notconcluded = ($form->events & JOBTRACK_EVENT_CONCLUDED) ? '' : 'checked="checked"';
+$notabandonned = ($form->events & JOBTRACK_EVENT_DEAD) ? '' : 'checked="checked"';
+?>
+<center>
+
+<!-- Print Watch Form -->
+
+<form name="editqueryform" action="view.php" method="post">
+<input type="hidden" name="id" value="<?php p($cm->id) ?>" />
+<input type="hidden" name="what" value="updatewatch" />
+<input type="hidden" name="view" value="profile" />
+<input type="hidden" name="ccid" value="<?php p($form->id) ?>" />
+<input type="hidden" name="screen" value="mywatches" />
+
+<table border="0" cellpadding="5 width="800">
+    <tr>
+        <td align="right"><b><?php print_string('jobname', 'jobtracker') ?>:</b></td>
+        <td colspan="3" align="left">
+            <?php echo "$jobtracker->ticketprefix.$form->jobid - $form->summary" ?>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" align="right"><b><?php print_string('setwhenopens', 'jobtracker') ?>:</b></td>
+        <td colspan="3" align="left">
+            <input type="radio" name="open" value="1" <?php echo $open ?> /> <?php print_string('yes') ?> -
+            <input type="radio" name="open" value="0" <?php echo $notopen ?> /> <?php print_string('no') ?>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" align="right"><b><?php print_string('setwhenshortlisted', 'jobtracker') ?>:</b></td>
+        <td colspan="3" align="left">
+            <input type="radio" name="shortlist" value="1" <?php echo $shortlisted ?> /> <?php print_string('yes') ?> -
+            <input type="radio" name="shortlist" value="0" <?php echo $notshortlisted ?> /> <?php print_string('no') ?>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" align="right"><b><?php print_string('setwhenwaitsevent', 'jobtracker') ?>:</b></td>
+        <td colspan="3" align="left">
+            <input type="radio" name="waitingevent" value="1" <?php echo $waiting ?> /> <?php print_string('yes') ?> -
+            <input type="radio" name="waitingevent" value="0" <?php echo $notwaiting ?> /> <?php print_string('no') ?>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" align="right"><b><?php print_string('setwhenmeetingscheduled', 'jobtracker') ?>:</b></td>
+        <td colspan="3" align="left">
+            <input type="radio" name="meetingscheduled" value="1" <?php echo $scheduled ?> /> <?php print_string('yes') ?> -
+            <input type="radio" name="meetingscheduled" value="0" <?php echo $notscheduled ?> /> <?php print_string('no') ?>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" align="right"><b><?php print_string('setwhenmeetingdone', 'jobtracker') ?>:</b></td>
+        <td colspan="3" align="left">
+            <input type="radio" name="meetingdone" value="1" <?php echo $done ?> /> <?php print_string('yes') ?> -
+            <input type="radio" name="meetingdone" value="0" <?php echo $notdone ?> /> <?php print_string('no') ?>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" align="right"><b><?php print_string('setwhenconcludes', 'jobtracker') ?>:</b></td>
+        <td colspan="3" align="left">
+            <input type="radio" name="concluded" value="1" <?php echo $concluded ?> /> <?php print_string('yes') ?> -
+            <input type="radio" name="concluded" value="0" <?php echo $notconcluded ?> /> <?php print_string('no') ?>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" align="right"><b><?php print_string('setwhendead', 'jobtracker') ?>:</b></td>
+        <td colspan="3" align="left">
+            <input type="radio" name="dead" value="1" <?php echo $dead ?> /> <?php print_string('yes') ?> -
+            <input type="radio" name="dead" value="0" <?php echo $notdead ?> /> <?php print_string('no') ?>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td align="center" colspan="4">
+            <input type="submit" name="go_btn" value="<?php print_string('savechanges') ?>" />
+            <input type="button" name="cancel_btn" value="<?php print_string('cancel') ?>" onclick="document.forms['editqueryform'].what.value = ''; document.forms['editqueryform'].submit()" />
+        </td>
+    </tr>
+</table>
+</form>
+<?php
+$OUTPUT->box_end();
+$nohtmleditorneeded = true;
+?>
+</center>

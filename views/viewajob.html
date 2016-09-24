@@ -1,0 +1,229 @@
+<?php
+
+/**
+ * @package mod-jobtracker
+ * @category mod
+ * @author Clifford Tham, Valery Fremaux > 1.8
+ * @date 02/12/2007
+ *
+ * HTML form
+ * Print Bug Description
+ */
+
+if (!defined('MOODLE_INTERNAL')) {
+    die('Direct access to this script is forbidden.');    ///  It must be included from view.php in mod/jobtracker
+}
+
+// set initial view mode for additional pannels
+$initialviewmode = ($action == 'doaddcomment') ? 'visiblediv' : 'hiddendiv' ;
+$initialviewmodeforccs = ($action == 'register' || $action == 'unregister') ? 'visiblediv' : 'hiddendiv' ;
+
+$job = $DB->get_record('jobtracker_job', array('id' => $jobid));
+
+if (!$job) {
+    redirect(new moodle_url('view.php', array('view' => 'view', 'screen' => 'myjobs', 'a' => $jobtracker->id)));
+}
+
+$job->reporter = $DB->get_record('user', array('id' => $job->userid));
+
+jobtracker_loadelementsused($jobtracker, $elementsused);
+
+// Check for lower dependancies.
+
+$ccs = $DB->get_records('jobtracker_jobcc', array('jobid' => $job->id));
+$cced = array();
+$statehistory = $DB->get_records_select('jobtracker_state_change', " jobtrackerid = ? AND jobid = ? ", array($jobtracker->id, $job->id),'timechange ASC');
+$showdependancieslink = (!empty($childtree) || !empty($parenttree)) ? "<a id=\"toggledependancieslink\" href=\"javascript:toggledependancies()\">".get_string(($initialviewmode == 'visiblediv') ? 'hidedependancies' : 'showdependancies', 'jobtracker').'</a>&nbsp;-&nbsp;' : '' ;
+$showccslink = (!empty($ccs)) ? "<a id=\"toggleccslink\" href=\"javascript:toggleccs()\">".get_string(($initialviewmodeforccs == 'visiblediv') ? 'hideccs' : 'showccs', 'jobtracker').'</a>&nbsp;-&nbsp;' : '' ;
+$showhistorylink = (!empty($statehistory)) ? '<a id="togglehistorylink" href="javascript:togglehistory()">'.get_string(($initialviewmode == 'visiblediv') ? 'hidehistory' : 'showhistory', 'jobtracker').'</a>&nbsp;-&nbsp;' : '' ;
+
+// Fixing embeded files URLS.
+
+$job->description = file_rewrite_pluginfile_urls($job->notes, 'pluginfile.php', $context->id, 'mod_jobtracker', 'jobdescription', $job->id);
+$job->resolution = file_rewrite_pluginfile_urls($job->resolution, 'pluginfile.php', $context->id, 'mod_jobtracker', 'jobresolution', $job->id);
+
+// Get STATUSKEYS labels.
+
+$STATUSKEYS = jobtracker_get_statuskeys($jobtracker);
+
+// Start ptinting.
+
+echo $OUTPUT->box_start();
+?>
+
+<!-- Print Bug Form -->
+
+<table cellpadding="5" class="jobtracker-job">
+<script type="text/javascript">
+    var showhistory = "<?php print_string('showhistory', 'jobtracker') ?>";
+    var hidehistory = "<?php print_string('hidehistory', 'jobtracker') ?>";
+    var showccs = "<?php print_string('showccs', 'jobtracker') ?>";
+    var hideccs = "<?php print_string('hideccs', 'jobtracker') ?>";
+    var showcomments = "<?php print_string('showcomments', 'jobtracker') ?>";
+    var hidecomments = "<?php print_string('hidecomments', 'jobtracker') ?>";
+</script>
+<?php
+
+if (jobtracker_can_workon($jobtracker, $context, $job)) {
+    // If I can resolve and I have seen, the bug is open
+    if ($job->status < JOBTRACK_OPEN) {
+        $oldstatus = $job->status;
+        $job->status = JOBTRACK_OPEN;
+        $DB->set_field('jobtracker_job', 'status', JOBTRACK_OPEN, array('id' => $jobid));
+        // log state change
+        $stc = new StdClass;
+        $stc->userid = $USER->id;
+        $stc->jobid = $job->id;
+        $stc->jobtrackerid = $jobtracker->id;
+        $stc->timechange = time();
+        $stc->statusfrom = $oldstatus;
+        $stc->statusto = $job->status;
+        $DB->insert_record('jobtracker_state_change', $stc);
+    }
+}
+
+echo $renderer->job_body($jobtracker, $cm, $job);
+
+if (is_array($elementsused)) {
+    $keys = array_keys($elementsused);
+    if (!empty($keys)) {
+        for ($i = 0; $i < count($keys); ) {
+            // Print first category in one column
+            $key = $keys[$i];
+            echo "<tr valign=\"top\">";
+            echo "<td align=\"right\" colspan=\"1\" class=\"jobtracker-job-description\">";
+            echo "<b>";
+            echo format_string($elementsused[$key]->description);
+            echo ":</b><br />";
+            echo "</td>";   
+            
+            echo "<td colspan=\"3\" align=\"left\" >";
+            echo $elementsused[$key]->view($job->id);
+            echo "</td>";
+            echo "</tr>";
+            $i++;
+        }
+    }
+}
+if (!empty($job->resolution)) {
+?>
+    <tr valign="top">
+        <td align="right" height="200" class="jobtracker-job-param"><b><?php print_string('resolution', 'jobtracker') ?>:</b></td>
+        <td align="left" colspan="3">
+            <?php echo format_text($job->resolution, $job->resolutionformat); ?>
+        </td>
+    </tr>
+<?php
+}
+$showcommentslink = '';
+$addcommentlink = '';
+$commentscount = $DB->count_records('jobtracker_jobcomment', array('jobid' => $job->id));
+$addcommentlink = '';
+
+if (has_capability('mod/jobtracker:comment', $context)) {
+    $commenturl = new moodle_url('/mod/jobtracker/addcomment.php', array('id' => $cm->id, 'jobid' => $jobid));
+    $addcommentlink = '<a href="'.$commenturl.'">'.get_string('addacomment', 'jobtracker').'</a>';
+}
+$showcommentslink = '';
+if ($commentscount) {
+    $showcommentslink = "<a id=\"togglecommentlink\" href=\"javascript:togglecomments()\">".get_string('showcomments', 'jobtracker').'</a>&nbsp;-&nbsp;';
+} else {
+    $showcommentslink = '<i>'.get_string('nocomments','jobtracker').'</i>&nbsp;-&nbsp;';
+}
+
+?>
+    <tr valign="top">
+        <td align="right" colspan="4">
+            <?php echo $showhistorylink.$showccslink.$showcommentslink.$addcommentlink; ?>
+        </td>
+    </tr>
+<?php
+if (!empty($commentscount)) {
+?>
+    <tr>
+        <td colspan="4">
+            <div id="jobcomments" class="<?php echo $initialviewmode ?> comments">
+            <table width="100%">
+                <?php jobtracker_printcomments($job->id); ?>
+            </table>
+            </div>
+        </td>
+    </tr>
+<?php
+}
+
+if ($showccslink) {
+?>
+    <tr>
+        <td colspan="4" align="center" width="100%">
+            <table id="jobccs" class="<?php echo $initialviewmodeforccs ?>" width="100%">
+                <tr>
+                    <td colspan="3">
+                        <?php echo $OUTPUT->heading(get_string('cced', 'jobtracker')) ?>
+                    </td>
+                </tr>
+<?php 
+    foreach ($ccs as $cc) {
+?>
+                <tr>
+                    <td width="20%" valign="top">&nbsp;</td>
+                    <td align="left" style="white-space : nowrap" valign="top">
+                        <?php 
+                        $user = $DB->get_record('user', array('id' => $cc->userid));
+                        jobtracker_print_user($user);
+                        $cced[] = $cc->userid;
+                        ?>
+                    </td>
+                    <td align="right">
+                        <?php
+                        if (has_capability('mod/jobtracker:managewatches', $context)) {
+                            $watchlink = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => 'view', 'what' => 'unregister', 'jobid' => $jobid, 'ccid' => $cc->userid));
+                            echo '&nbsp;<a href="'.$watchlink.'" title="'.get_string('delete')."\"><img src=\"".$OUTPUT->pix_url('t/delete', 'core')."\" /></a>";
+                        }
+                        ?>
+                    </td>
+                </tr>
+<?php
+    }
+?>
+            </table>
+        </td>
+    </tr>
+<?php
+}
+if (has_capability('mod/jobtracker:managewatches', $context)) {
+?>
+    <tr>
+        <td>&nbsp;</td>
+        <td colspan="3" align="right">
+            <form name="addccform" method="get" action="view.php">
+            <input type="hidden" name="id" value="<?php p($cm->id) ?>" />
+            <input type="hidden" name="what" value="register" />
+            <input type="hidden" name="view" value="view" />
+            <input type="hidden" name="jobid" value="<?php p($jobid) ?>" />
+            <?php 
+            echo get_string('addawatcher', 'jobtracker').':&nbsp;';
+            $contextmodule = context_module::instance($cm->id);
+            $potentials = get_users_by_capability($contextmodule, 'mod/jobtracker:canbecced', 'u.id, firstname, lastname, picture, email,emailstop', 'lastname,firstname');
+            $potentialsmenu = array();
+            if ($potentials) {
+                foreach ($potentials as $potential) {
+                    if (in_array($potential->id, $cced)) continue;
+                    $potentialsmenu[$potential->id] = fullname($potential);
+                }
+            }
+            echo html_writer::select($potentialsmenu, 'ccid');
+            ?>
+            <input type="submit" name="go_btn" value="<?php print_string('add') ?>" />
+            </form>
+        </td>
+    </tr>
+<?php
+}
+if ($showhistorylink) {
+    echo $renderer->history_detail($statehistory, $initialviewmode);
+}
+?>
+</table>
+<?php
+echo $OUTPUT->box_end();
