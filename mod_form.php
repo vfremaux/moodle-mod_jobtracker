@@ -3,7 +3,7 @@
 /**
  * This view allows checking deck states
  * 
- * @package mod-jobtracker
+ * @package mod_jobtracker
  * @category mod
  * @author Valery Fremaux
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
