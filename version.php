@@ -17,22 +17,21 @@
 /**
  * Version details.
  *
- * @package    mod_jobtracker
- * @category   mod
+ * @package mod_jobtracker
+ * @category mod
  * @author     Valery Fremaux (valery.fremaux@gmail.com)
- * @copyright  2013 onwards Valery Fremaux (valery.fremaux@gmail.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2013 onwards Valery Fremaux (valery.fremaux@gmail.com)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version  = 2015011902;  // The current module version (Date: YYYYMMDDXX)
-$plugin->requires = 2012062501;
+$plugin->requires = 2016052300;
 $plugin->component = 'mod_jobtracker';   // Full name of the plugin (used for diagnostics)
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = '3.0.0 (Build 2015011902)';
+$plugin->release = '3.1.0 (Build 2015011902)';
 $plugin->dependencies = array('local_vflibs' => 2015053000);
 
-// Non Moodle fields
-// This fields will help overmanagement code builders without forcing upgrade to play
-$plugin->codeincrement = '3.0.0000';
+// Non Moodle attributes.
+$plugin->codeincrement = '3.1.0000';
