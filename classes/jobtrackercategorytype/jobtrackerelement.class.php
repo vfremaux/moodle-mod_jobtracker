@@ -144,22 +144,37 @@ abstract class jobtrackerelement {
         $strsortorder = get_string('sortorder', 'jobtracker');
         $straction = get_string('action');
         $table = new html_table();
-        $table->width = "800";
-        $table->size = array(100,110,240,75,75);
-        $table->head = array('', "<b>$strname</b>","<b>$strdescription</b>","<b>$straction</b>");
+        $table->width = '90%';
+        $table->size = array('25%', '25%', '50%', '20%');
+        $table->head = array('', "<b>$strname</b>", "<b>$strdescription</b>", "<b>$straction</b>");
         if (!empty($this->options)) {
             foreach ($this->options as $option) {
-                $actionurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => 'admin', 'what' => 'editelementoption', 'optionid' => $option->id, 'elementid' => $option->elementid));
-                $actions  = '<a href=\"'.$actionurl.'" title="'.get_string('edit')."\"><img src=\"".$OUTPUT->pix_url('/t/edit', 'core')."\" /></a>&nbsp;" ;
+                $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'editelementoption',
+                                'optionid' => $option->id, 'elementid' => $option->elementid);
+                $actionurl = new moodle_url('/mod/jobtracker/view.php', $params);
+                $actions  = '<a href="'.$actionurl.'">'.$OUTPUT->pix_icon('/t/edit', get_string('edit'), 'core').'</a>&nbsp;';
                 $img = ($option->sortorder > 1) ? 'up' : 'up_shadow' ;
-                $actionurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => 'admin', 'what' => 'moveelementoptionup', 'optionid' => $option->id, 'elementid' => $option->elementid));
-                $actions .= '<a href="'.$actionurl.'" title="'.get_string('up').'"><img src="'.$OUTPUT->pix_url("{$img}", 'mod_jobtracker').'"></a>&nbsp;';
+
+                $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'moveelementoptionup',
+                                'optionid' => $option->id, 'elementid' => $option->elementid);
+                $actionurl = new moodle_url('/mod/jobtracker/view.php', $params);
+                $actions .= '<a href="'.$actionurl.'">'.$OUTPUT->pix_icon("{$img}", get_string('up'), 'mod_jobtracker').'</a>&nbsp;';
                 $img = ($option->sortorder < $this->maxorder) ? 'down' : 'down_shadow' ;
-                $actionurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => 'admin', 'what' => 'moveelementoptiondown', 'optionid' => $option->id, 'elementid' => $option->elementid));
-                $actions .= '<a href="'.$actionurl.'" title="'.get_string('down').'"><img src="'.$OUTPUT->pix_url("{$img}", 'mod_jobtracker').'"></a>&nbsp;';
-                $actionurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => 'admin', 'what' => 'deleteelementoption', 'optionid' => $option->id, 'elementid' => $option->elementid));
-                $actions .= '<a href="'.$actionurl.'" title="'.get_string('delete')."\"><img src=\"".$OUTPUT->pix_url('/t/delete', 'core').'"></a>';
-                $table->data[] = array('<b> '.get_string('option', 'jobtracker').' '.$option->sortorder.':</b>',$option->name, format_string($option->description, true, $COURSE->id), $actions);
+
+                $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'moveelementoptiondown',
+                                'optionid' => $option->id, 'elementid' => $option->elementid);
+                $actionurl = new moodle_url('/mod/jobtracker/view.php', $params);
+                $actions .= '<a href="'.$actionurl.'">'.$OUTPUT->pix_icon("{$img}", get_string('down'), 'mod_jobtracker').'</a>&nbsp;';
+
+                $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'deleteelementoption',
+                                'optionid' => $option->id, 'elementid' => $option->elementid);
+                $actionurl = new moodle_url('/mod/jobtracker/view.php', $params);
+                $actions .= '<a href="'.$actionurl.'">'.$OUTPUT->pix_icon('/t/delete', get_string('delete'), 'core').'</a>';
+
+                $table->data[] = array('<b> '.get_string('option', 'jobtracker').' '.$option->sortorder.':</b>',
+                                       $option->name,
+                                       format_string($option->description, true, $COURSE->id),
+                                       $actions);
             }
         }
         echo html_writer::table($table);

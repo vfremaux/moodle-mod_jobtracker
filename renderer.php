@@ -53,7 +53,8 @@ class mod_jobtracker_renderer extends plugin_renderer_base {
         $str .= '<ul id="status-picker-'.$job->id.'" class="jobtracker-status-list">';
         $str .= '<li>';
         $str .= '<ul class="dropdown-menu jobtracker">';
-        $str .= '<li id="status-picker-current-'.$job->id.'" class="jobtracker-status-'.$currentstatuscode.'"><a href="#">'.$currentstatus.'<img src="'.$OUTPUT->pix_url('arrow', 'jobtracker').'"/></a>';
+        $str .= '<li id="status-picker-current-'.$job->id.'" class="jobtracker-status-'.$currentstatuscode.'">';
+        $str .= '<a href="#">'.$currentstatus.' '.$OUTPUT->pix_icon('arrow', '', 'jobtracker').'</a>';
         $str .= '<ul>';
         foreach ($STATUSKEYS as $statusid => $status) {
             $statuscode = $STATUSCODES[$statusid];
@@ -342,10 +343,12 @@ class mod_jobtracker_renderer extends plugin_renderer_base {
         } else {
             $str = '';
             $str .= '<div class="fluid-container"><div class="fluid-row">';
-            $upurl = $OUTPUT->pix_url('t/up');
-            $downurl = $OUTPUT->pix_url('t/down');
+            $upurl = $OUTPUT->image_url('t/up');
+            $downurl = $OUTPUT->image_url('t/down');
             if (empty($options['nochanges'])) {
-                $str .= '<div width="1" class="jobtracker-track-controls span2"><img class="tracks-hidden" id="trackctl_'.$userid.'" src="'.$upurl.'" onclick="toggletrackvisibility('.$userid.', \''.$upurl.'\', \''.$downurl.'\')" /></div>';
+                $jshandler = 'toggletrackvisibility('.$userid.', \''.$upurl.'\', \''.$downurl.'\')';
+                $pix = '<img class="tracks-hidden" id="trackctl_'.$userid.'" src="'.$upurl.'" onclick="'.$jshandler.'" />';
+                $str .= '<div width="1" class="jobtracker-track-controls span2">'.$pix.'</div>';
             }
             $str .= '<div class="jobtracker-track-track span10">';
             foreach ($jobs as $job) {

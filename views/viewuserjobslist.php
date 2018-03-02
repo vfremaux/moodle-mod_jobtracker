@@ -165,15 +165,15 @@ if (!empty($jobs)) {
         }
 
         $hassolution = $job->status == JOBTRACK_CONCLUDED && !empty($job->resolution);
-        $solution = ($hassolution) ? '<img src="'.$OUTPUT->pix_url('solution', 'jobtracker').'" height="15" alt="'.get_string('hassolution','jobtracker').'" />' : '';
+        $solution = ($hassolution) ? $OUTPUT->pix_icon('solution', get_string('hassolution','jobtracker'), 'jobtracker') : '';
         $actions = '';
         if (has_capability('mod/jobtracker:manage', $context) || has_capability('mod/jobtracker:workon', $context)) {
             $editurl = new moodle_url('/mod/jobtracker/editajob.php', array('id' => $cm->id, 'jobid' => $job->id, 'return' => 'browse'));
-            $actions = '<a href="'.$editurl.'" title="'.get_string('update').'" ><img src="'.$OUTPUT->pix_url('t/edit').'" /></a>';
+            $actions = '<a href="'.$editurl.'" >'.$OUTPUT->pix_icon('t/edit', get_string('edit')).'</a>';
         }
         if (has_capability('mod/jobtracker:manage', $context)) {
             $deleteurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => 'view', 'jobid' => $job->id, 'what' => 'delete'));
-            $actions .= '&nbsp;<a href="'.$deleteurl.'" title="'.get_string('delete').'" ><img src="'.$OUTPUT->pix_url('t/delete').'" /></a>';
+            $actions .= '&nbsp;<a href="'.$deleteurl.'">'.$OUTPUT->pix_icon('t/delete', get_string('delete')).'</a>';
         }
         // Ergo Report I3 2012 => self list displays owned tickets. Already registered
         if (has_capability('mod/jobtracker:viewpriority', $context) && !$resolved) {

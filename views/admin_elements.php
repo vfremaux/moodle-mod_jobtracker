@@ -68,23 +68,29 @@ if (!empty($elements)) {
         if ($element->hasoptions() && empty($element->options)) {
             $name .= ' <span class="error">('.get_string('nooptions', 'jobtracker').')</span>';
         }
-        $addurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => 'admin', 'what' => 'addelement', 'elementid' => $element->id));
-        $actions = '&nbsp;<a href="'.$addurl.'" title="'.get_string('addtothejobtracker', 'jobtracker').'" ><img src="'.$OUTPUT->pix_url('t/moveleft', 'core') .'" /></a>';
+        $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'addelement', 'elementid' => $element->id);
+        $addurl = new moodle_url('/mod/jobtracker/view.php', $params);
+        $pix = $OUTPUT->pix_icon('t/moveleft', get_string('addtothejobtracker', 'jobtracker'), 'core');
+        $actions = '&nbsp;<a href="'.$addurl.'">'.$pix.'</a>';
 
-        $editoptionsurl = new moodle_url('/mod/jobtracker/editelementoptions.php', array('id' => $id, 'elementid' => $element->id));
-        $actions .= '&nbsp;<a href="'.$editoptionsurl.'" title="'.get_string('editoptions', 'jobtracker').'"><img src="'.$OUTPUT->pix_url('editoptions', 'mod_jobtracker').'" /></a>';
+        $params = array('id' => $id, 'elementid' => $element->id);
+        $editoptionsurl = new moodle_url('/mod/jobtracker/editelementoptions.php', $params);
+        $pix = $OUTPUT->pix_icon('editoptions', get_string('editoptions', 'jobtracker'), 'mod_jobtracker');
+        $actions .= '&nbsp;<a href="'.$editoptionsurl.'">'.$pix.'</a>';
 
         $editurl = new moodle_url('/mod/jobtracker/editelement.php', array('id' => $id, 'elementid' => $element->id));
-        $actions .= '&nbsp;<a href="'.$editurl.'" title="'.get_string('editproperties', 'jobtracker').'"><img src="'.$OUTPUT->pix_url('t/edit', 'core') .'" /></a>';
+        $pix = $OUTPUT->pix_icon('t/edit', get_string('editproperties', 'jobtracker'), 'core');
+        $actions .= '&nbsp;<a href="'.$editurl.'">'.$pix.'</a>';
 
-        $deleteurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $id, 'elementid' => $element->id, 'what' => 'deleteelement'));
-        $actions .= '&nbsp;<a href="'.$deleteurl.'" title="'.get_string('delete').'"><img src="'.$OUTPUT->pix_url('t/delete', 'core') .'" /></a>';
+        $params = array('id' => $id, 'elementid' => $element->id, 'what' => 'deleteelement');
+        $deleteurl = new moodle_url('/mod/jobtracker/view.php', $params);
+        $actions .= '&nbsp;<a href="'.$deleteurl.'"><img src="'.$OUTPUT->pix_icon('t/delete', get_string('delete'), 'core') .'</a>';
 
         $local = '';
         if ($element->course == $COURSE->id) {
-            $local = "<img src=\"".$OUTPUT->pix_url('i/course', 'core') ."\" />";
+            $local = $OUTPUT->pix_icon('i/course', '', 'core');
         }
-        $type = "<img src=\"".$OUTPUT->pix_url("types/{$element->type}", 'mod_jobtracker')."\" />";
+        $type = $OUTPUT->pix_icon("types/{$element->type}", '', 'mod_jobtracker');
         $table->data[] = array($actions, $name, $local, $type);
     }
     echo html_writer::table($table);

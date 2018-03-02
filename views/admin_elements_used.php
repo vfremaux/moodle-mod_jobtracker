@@ -10,7 +10,7 @@
 */
 
 if (!defined('MOODLE_INTERNAL')) {
-    die('Direct access to this script is forbidden.');    ///  It must be included from view.php in mod/jobtracker
+    die('Direct access to this script is forbidden.');    //  It must be included from view.php in mod/jobtracker
 }
 
 $OUTPUT->box_start('center', '100%', '', '', 'generalbox', 'description');
@@ -32,28 +32,44 @@ $table->width = '100%';
 $table->size = array(20, 250, 50, 100);
 $table->align = array('left', 'center', 'center', 'center'); 
 
-if (!empty($used)){
-	foreach ($used as $element){
-	    $icontype = "<img src=\"".$OUTPUT->pix_url("/types/{$element->type}", 'mod_jobtracker')."\" />";
-	    if ($element->sortorder > 1){
-    	    $actions = "&nbsp;<a href=\"view.php?id={$cm->id}&amp;view=admin&amp;what=raiseelement&amp;elementid={$element->id}\"><img src=\"".$OUTPUT->pix_url('/t/up', 'core')."\" /></a>";
-    	} else {
-    	    $actions = "&nbsp;<img src=\"".$OUTPUT->pix_url('up_shadow', 'mod_jobtracker')."\" />";
-    	}
-    	if ($element->sortorder < count($used)){
-    	    $actions .= "&nbsp;<a href=\"view.php?id={$cm->id}&amp;view=admin&amp;what=lowerelement&amp;elementid={$element->id}\"><img src=\"".$OUTPUT->pix_url('/t/down', 'core')."\" /></a>";
-    	} else {
-    	    $actions .= "&nbsp;<img src=\"".$OUTPUT->pix_url('down_shadow', 'mod_jobtracker')."\" />";
-    	}
-	    $actions .= "&nbsp;<a href=\"view.php?id={$cm->id}&amp;view=admin&amp;what=editelement&amp;elementid={$element->id}&amp;used=1\"><img src=\"".$OUTPUT->pix_url('/t/edit', 'core')."\" /></a>";
-		
-	    $actions .= "&nbsp;<a href=\"view.php?id={$cm->id}&amp;view=admin&amp;what=viewelementoptions&amp;elementid={$element->id}\" title=\"".get_string('editoptions', 'mod_jobtracker')."\"><img src=\"".$OUTPUT->pix_url('editoptions', 'mod_jobtracker')."\" /></a>";
-	    $actions .= "&nbsp;<a href=\"view.php?id={$cm->id}&amp;view=admin&amp;what=removeelement&amp;usedid={$element->id}\"><img src=\"".$OUTPUT->pix_url('/t/right', 'core')."\" /></a>";
-	    if ($element->active){
-		    $actions .= "&nbsp;<a href=\"view.php?id={$cm->id}&amp;view=admin&amp;what=setinactive&amp;usedid={$element->id}\"><img src=\"".$OUTPUT->pix_url('/t/hide', 'core')."\" /></a>";
-	    } else {
-		    $actions .= "&nbsp;<a href=\"view.php?id={$cm->id}&amp;view=admin&amp;what=setactive&amp;usedid={$element->id}\"><img src=\"".$OUTPUT->pix_url('/t/show', 'core')."\" /></a>";
-	    }
+if (!empty($used)) {
+    foreach ($used as $element) {
+        $icontype = $OUTPUT->pix_icon('/types/{$element->type}', '', 'mod_jobtracker');
+        if ($element->sortorder > 1) {
+            $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'raiseelement', 'elementid' => $element->id);
+            $viewurl = new moodle_url('/mod/jobtracker/view.php', $params);
+            $actions = '&nbsp;<a href="'.$viewurl.'">'.$OUTPUT->pix_icon('/t/up', '', 'core').'</a>';
+        } else {
+            $actions = '&nbsp;'.$OUTPUT->pix_icon('up_shadow', '', 'mod_jobtracker');
+        }
+        if ($element->sortorder < count($used)) {
+            $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'lowerelement', 'elementid' => $element->id);
+            $viewurl = new moodle_url('/mod/jobtracker/view.php', $params);
+            $actions .= '&nbsp;<a href="'.$viewurl.'">'.$OUTPUT->pix_icon('/t/down', '', 'core').'</a>';
+        } else {
+            $actions .= '&nbsp;'.$OUTPUT->pix_icon('down_shadow', '', 'mod_jobtracker');
+        }
+        $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'editelement', 'elementid' => $element->id, 'used' => 1);
+        $viewurl = new moodle_url('/mod/jobtracker/view.php', $params);
+        $actions .= '&nbsp;<a href="'.$viewurl.'">'.$OUTPUT->pix_icon('/t/edit', get_string('update'), 'core').'</a>';
+
+        $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'viewelementoptions', 'elementid' => $element->id);
+        $viewurl = new moodle_url('/mod/jobtracker/view.php', $params);
+        $actions .= '&nbsp;<a href="'.$viewurl.'">'.$OUTPUT->pix_icon('editoptions', get_string('editoptions', 'mod_jobtracker'), 'mod_jobtracker').'</a>';
+
+        $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'removeelement', 'usedid' => $element->id);
+        $viewurl = new moodle_url('/mod/jobtracker/view.php', $params);
+        $actions .= '&nbsp;<a href="'.$viewurl.'">'.$OUTPUT->pix_icon('/t/right', '', 'core').'</a>';
+
+        if ($element->active){
+            $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'setinactive', 'usedid' => $element->id);
+            $viewurl = new moodle_url('/mod/jobtracker/view.php', $params);
+            $actions .= '&nbsp;<a href="'.$viewurl.'">'.$OUTPUT->pix_icon('/t/hide', get_string('show'), 'core').'</a>';
+        } else {
+            $params = array('id' => $cm->id, 'view' => 'admin', 'what' => 'setactive', 'usedid' => $element->id);
+            $viewurl = new moodle_url('/mod/jobtracker/view.php', $params);
+            $actions .= '&nbsp;<a href="'.$viewurl.'">'.$OUTPUT->pix_icon('/t/show', get_string('hide'), 'core').'</a>';
+        }
         $table->data[] = array($element->sortorder, format_string($element->description), $icontype, $actions);
     }
     echo html_writer::table($table);
@@ -63,6 +79,4 @@ if (!empty($used)){
     echo '<br/></center>';
 }
 
-$OUTPUT->box_end(); 
-
-?>
+$OUTPUT->box_end();
