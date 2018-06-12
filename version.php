@@ -30,8 +30,8 @@ $plugin->version  = 2015011902;  // The current module version (Date: YYYYMMDDXX
 $plugin->requires = 2017110800;
 $plugin->component = 'mod_jobtracker';   // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = '3.4.0 (Build 2015011902)';
+$plugin->release = '3.5.0 (Build 2015011902)';
 $plugin->dependencies = array('local_vflibs' => 2015053000);
 
 // Non Moodle attributes.
-$plugin->codeincrement = '3.4.0000';
+$plugin->codeincrement = '3.5.0000';
