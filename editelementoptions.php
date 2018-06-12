@@ -84,7 +84,6 @@ if ($elmid) {
 } else {
     $PAGE->navbar->add(get_string('createelementoption', 'jobtracker'), $returnurl);
 }
-$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'jobtracker'));
 
 require_once($CFG->dirroot.'/mod/jobtracker/forms/updateoption_form.php');
 
