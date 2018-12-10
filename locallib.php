@@ -535,10 +535,13 @@ function jobtracker_print_user($user) {
         $str .= $OUTPUT->user_picture ($user, array('courseid' => $COURSE->id, 'size' => 25));
         if ($CFG->messaging) {
             $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $COURSE->id));
-            $str .= '&nbsp;<a href="'.$userurl.'">'.fullname($user).'</a> <a href="'.$userurl.'" onclick="this.target=\'message\'; return openpopup(\'/message/discussion.php?id='.$user->id.'\', \'message\', \'menubar=0,location=0,scrollbars,status,resizable,width=400,height=500\', 0);" ><img src="'.$OUTPUT->pix_url('t/message', 'core').'"></a>';
+            $str .= '&nbsp;<a href="'.$userurl.'">'.fullname($user).'</a> ';
+            $jshandler = 'this.target=\'message\'; return openpopup(\'/message/discussion.php?id='.$user->id.'\', \'message\', \'menubar=0,location=0,scrollbars,status,resizable,width=400,height=500\', 0);';
+            $str .= '<a href="'.$userurl.'" onclick="'.$jshandler.'" >'.$OUTPUT->pix_icon('t/message', '', 'core').'</a>';
         } elseif (!$user->emailstop && $user->maildisplay) {
             $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $COURSE->id));
-            $str .= '&nbsp;<a href="'.$userurl.'">'.fullname($user).'</a> <a href="mailto:'.$user->email.'"><img src="'.$OUTPUT->pix_url('t/mail', 'core').'"></a>';
+            $str .= '&nbsp;<a href="'.$userurl.'">'.fullname($user).'</a> ';
+            $str .= '<a href="mailto:'.$user->email.'">'.$OUTPUT->pix_icon('t/mail', '', 'core').'</a>';
         } else {
             $str .= '&nbsp;'.fullname($user);
         }

@@ -180,19 +180,19 @@ if (!empty($jobs)) {
         }
         $status = '<div class="status-'.$STATUSCODES[$job->status].'" style="width: 110%; height: 105%; text-align:center">'.$status.'</div>';
         $hassolution = $job->status == JOBTRACK_CONCLUDED && !empty($job->resolution);
-        $solution = ($hassolution) ? "<img src=\"".$OUTPUT->pix_url('solution', 'jobtracker').'" height="15" alt="'.get_string('hassolution','jobtracker')."\" />" : '' ;
+        $solution = ($hassolution) ? $OUTPUT->pix_icon('solution', get_string('hassolution','jobtracker'), 'jobtracker') : '';
         $actions = '';
         if (has_capability('mod/jobtracker:manage', $context) || has_capability('mod/jobtracker:resolve', $context)) {
             $editurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => 'view', 'jobid' => $job->id, 'screen' => 'editanopportunity'));
-            $actions = '<a href="'.$editurl.'" title="'.get_string('update')."\" ><img src=\"".$OUTPUT->pix_url('t/edit').'" /></a>';
+            $actions = '<a href="'.$editurl.'">'.$OUTPUT->pix_icon('t/edit', get_string('update')).'</a>';
         }
         if (has_capability('mod/jobtracker:manage', $context)) {
             $deleteurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'jobid' => $job->id, 'what' => 'delete'));
-            $actions .= '&nbsp;<a href="'.$deleteurl.'" title="'.get_string('delete').'" ><img src="'.$OUTPUT->pix_url('t/delete').'" /></a>';
+            $actions .= '&nbsp;<a href="'.$deleteurl.'">'.$OUTPUT->pix_icon('t/delete', get_string('delete')).'</a>';
         }
         if (!$DB->get_record('jobtracker_jobcc', array('userid' => $USER->id, 'jobid' => $job->id))) {
             $registerurl = new moodle_url('/mod/tracker/view.php', array('id' => $cm->id, 'view' => 'profile', 'screen' => $screen, 'jobid' => $job->id, 'what' => 'register'));
-            $actions .= '&nbsp;<a href="'.$registerurl.'" title="'.get_string('register', 'jobtracker').'" ><img src="'.$OUTPUT->pix_url('register', 'mod_jobtracker').'" /></a>';
+            $actions .= '&nbsp;<a href="'.$registerurl.'">'.$OUTPUT->pix_icon('register', get_string('register', 'jobtracker'), 'mod_jobtracker').'</a>';
         }
         if ($resolved) {
             $dataset = array($jobnumber, $company.' '.$solution, $timecreated, $userid, $status, 0 + $job->watches, $actions);

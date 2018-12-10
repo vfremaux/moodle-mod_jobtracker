@@ -79,7 +79,6 @@ if ($elmid) {
     $PAGE->navbar->add(get_string('createelement', 'jobtracker'), $returnurl);
 }
 $PAGE->set_url($url);
-$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'jobtracker'));
 
 $formclassname = 'jobtracker_element_'.$elmtype.'_form';
 require_once($CFG->dirroot.'/mod/jobtracker/classes/jobtrackercategorytype/'.$elmtype.'/'.$formclassname.'.php');

@@ -69,7 +69,6 @@ $PAGE->set_title(format_string($jobtracker->name));
 $PAGE->set_heading(format_string($jobtracker->name));
 $PAGE->navbar->add(get_string('jobedit', 'jobtracker'));
 $PAGE->set_url($url);
-$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'jobtracker'));
 
 require_once($CFG->dirroot.'/mod/jobtracker/forms/editjob_form.php');
 

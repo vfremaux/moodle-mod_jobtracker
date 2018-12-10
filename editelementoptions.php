@@ -84,7 +84,6 @@ if ($elmid) {
 } else {
     $PAGE->navbar->add(get_string('createelementoption', 'jobtracker'), $returnurl);
 }
-$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'jobtracker'));
 
 require_once($CFG->dirroot.'/mod/jobtracker/forms/updateoption_form.php');
 
@@ -141,22 +140,26 @@ if ($options) {
     $i = 0;
     $count = count($options);
     foreach ($options as $option) {
-        $editurl = new moodle_url('/mod/jobtracker/editelementoptions.php', array('id' => $id, 'elementoptionid' => $option->id, 'what' => 'edit'));
-        $cmds = '<a href="'.$editurl.'" ><img src="'.$OUTPUT->pix_url('/t/edit').'" /></a>';
+        $params = array('id' => $id, 'elementoptionid' => $option->id, 'what' => 'edit');
+        $editurl = new moodle_url('/mod/jobtracker/editelementoptions.php', $params);
+        $cmds = '<a href="'.$editurl.'" >'.$OUTPUT->pix_icon('/t/edit', get_string('edit')).'</a>';
 
-        $deleteurl = new moodle_url('/mod/jobtracker/editelementoptions.php', array('id' => $id, 'elementoptionid' => $option->id, 'what' => 'delete'));
-        $cmds .= '<a href="'.$deleteurl.'" ><img src="'.$OUTPUT->pix_url('/t/delete').'" /></a>';
+        $params = array('id' => $id, 'elementoptionid' => $option->id, 'what' => 'delete');
+        $deleteurl = new moodle_url('/mod/jobtracker/editelementoptions.php', $params);
+        $cmds .= '<a href="'.$deleteurl.'" >'.$OUTPUT->pix_icon('/t/delete', get_string('delete')).'</a>';
 
         if ($i > 0) {
-            $upurl = new moodle_url('/mod/jobtracker/editelementoptions.php', array('id' => $id, 'elementoptionid' => $option->id, 'what' => 'up'));
-            $cmds .= ' <a href="'.$upurl.'" ><img src="'.$OUTPUT->pix_url('/t/up').'" /></a>';
+            $params = array('id' => $id, 'elementoptionid' => $option->id, 'what' => 'up');
+            $upurl = new moodle_url('/mod/jobtracker/editelementoptions.php', $params);
+            $cmds .= ' <a href="'.$upurl.'" >'.$OUTPUT->pix_icon('/t/up', get_string('up')).'</a>';
         }
 
         $i++;
 
         if ($i < $count) {
-            $downurl = new moodle_url('/mod/jobtracker/editelementoptions.php', array('id' => $id, 'elementoptionid' => $option->id, 'what' => 'down'));
-            $cmds .= ' <a href="'.$downurl.'" ><img src="'.$OUTPUT->pix_url('/t/down').'" /></a>';
+            $params = array('id' => $id, 'elementoptionid' => $option->id, 'what' => 'down');
+            $downurl = new moodle_url('/mod/jobtracker/editelementoptions.php', $params);
+            $cmds .= ' <a href="'.$downurl.'" >'.$OUTPUT->pix_icon('/t/down', get_string('down')).'</a>';
         }
 
         $table->data[] = array($option->name, $option->description, $cmds);

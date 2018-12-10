@@ -138,7 +138,6 @@ $PAGE->set_context($context);
 $PAGE->set_title(format_string($jobtracker->name));
 $PAGE->set_heading(format_string($jobtracker->name));
 $PAGE->set_url($url);
-$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'jobtracker'));
 
 $renderer = $PAGE->get_renderer('jobtracker');
 
