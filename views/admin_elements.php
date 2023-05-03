@@ -17,7 +17,7 @@ if (!defined('MOODLE_INTERNAL')) {
 $id = optional_param('id', 0, PARAM_INT); // Course Module ID, or
 $a  = optional_param('a', 0, PARAM_INT);  // course ID
 
-echo $OUTPUT->box_start('center', '100%', '', '', 'generalbox', 'description');
+echo $OUTPUT->box_start('generalbox', 'description');
 
 $types = jobtracker_getelementtypes();
 $elementtypeurls = array();
@@ -31,7 +31,7 @@ print_string('createnewelement', 'jobtracker');
 echo $OUTPUT->url_select($elementtypeurls, null, array('' => 'choosedots'));
 
 echo $OUTPUT->box_end();
-echo $OUTPUT->box_start('center', '100%', '', '', 'generalbox', 'description');
+echo $OUTPUT->box_start('generalbox', 'description');
 
 jobtracker_loadelements($jobtracker, $elements);
 
@@ -99,4 +99,4 @@ if (!empty($elements)) {
     print_string('noelements', 'jobtracker');
     echo '<br /></center>';
 }
-echo $OUTPUT->box_end(); 
+echo $OUTPUT->box_end();

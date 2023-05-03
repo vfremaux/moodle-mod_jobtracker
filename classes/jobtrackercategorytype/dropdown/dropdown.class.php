@@ -14,7 +14,7 @@ class dropdownelement extends jobtrackerelement {
 
     var $multiple;
 
-    function dropdownelement(&$jobtracker, $id = null, $used = false) {
+    function __construct(&$jobtracker, $id = null, $used = false) {
         parent::__construct($jobtracker, $id, $used);
         $this->setoptionsfromdb();
     }

@@ -97,7 +97,7 @@ if ($data = $form->get_data()) {
         $jobs[] = $job;
     }
 
-    foreach($jobs as $job) {
+    foreach ($jobs as $job) {
         // Register a single job.
         if (!$job = jobtracker_submitanopportunity($jobtracker, $job)) {
             print_error('errorcannotsubmitticket', 'jobtracker');

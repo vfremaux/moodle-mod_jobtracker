@@ -186,6 +186,7 @@ $string['noelements'] = 'Aucun élément';
 $string['noelementscreated'] = 'Aucun élément créé';
 $string['nofile'] = 'Pas de fichier attaché';
 $string['nofileloaded'] = 'Pas de fichier chargé.';
+$string['nofollowed'] = 'Aucun utilisateur suivi';
 $string['nofollowers'] = 'Pas de responsables';
 $string['nojobs'] = 'Aucune opportunité';
 $string['nojobsorfollowers'] = 'Pas d\'opportunités ou d\'assignations';

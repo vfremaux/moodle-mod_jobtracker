@@ -1,7 +1,7 @@
 <?php
 
 if ($groupmode == NOGROUPS) {
-    $followed = get_users_by_capability($context, 'mod/jobtracker:workon', 'u.id, u.username, u.firstname, u.lastname');
+    $followed = get_users_by_capability($context, 'mod/jobtracker:workon', 'u.id, u.username,'.get_all_user_name_fields(true, 'u'));
 } else {
     $returnurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => $view, 'screen' => $screen));
     groups_print_activity_menu($cm, $returnurl);
@@ -17,6 +17,7 @@ if ($groupmode == NOGROUPS) {
 
 if (empty($followed)) {
     echo $OUTPUT->notification(get_string('nofollowed', 'jobtracker'));
+    echo $OUTPUT->box_end();
     echo $OUTPUT->footer();
     die;
 }

@@ -13,9 +13,7 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    //  It must be included from view.php in mod/jobtracker
 }
 
-$OUTPUT->box_start('center', '100%', '', '', 'generalbox', 'description');
-$OUTPUT->box_end(); 
-$OUTPUT->box_start('center', '100%', '', '', 'generalbox', 'description');
+$OUTPUT->box_start('generalbox', 'description');
 
 jobtracker_loadelementsused($jobtracker, $used);
 

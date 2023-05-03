@@ -246,6 +246,7 @@ $string['nofileloaded'] = 'No file loaded here.';
 $string['nofollowers'] = 'No students';
 $string['nojobs'] = 'No owned jobs.';
 $string['nojobsfollowed'] = 'No followd jobs';
+$string['nofollowed'] = 'No users followed';
 $string['nojobsreported'] = 'No jobs here';
 $string['nojobsconcluded'] = 'No jobs concluded';
 $string['nojobsorfollowers'] = 'No jobs nor followers';

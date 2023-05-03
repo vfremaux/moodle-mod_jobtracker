@@ -341,7 +341,8 @@ if (!$alltickets) {
                 array('color' => '#00C000'),
             ),
             );
-        jobtracker_jqplot_print_graph('plot1', $jqplot, $data, 550, 250, 'margin-top:20px;');        
+        include_once($CFG->dirroot.'/local/vflibs/jqplotlib.php');
+        local_vflibs_jqplot_print_graph('plot1', $jqplot, $data, 550, 250, 'margin-top:20px;');
         ?>
         </td>
     </tr>
