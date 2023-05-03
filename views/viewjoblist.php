@@ -183,7 +183,7 @@ if (!empty($jobs)) {
         $solution = ($hassolution) ? $OUTPUT->pix_icon('solution', get_string('hassolution','jobtracker'), 'jobtracker') : '';
         $actions = '';
         if (has_capability('mod/jobtracker:manage', $context) || has_capability('mod/jobtracker:resolve', $context)) {
-            $editurl = new moodle_url('/mod/jobtracker/view.php', array('id' => $cm->id, 'view' => 'view', 'jobid' => $job->id, 'screen' => 'editanopportunity'));
+            $editurl = new moodle_url('/mod/jobtracker/editajob.php', array('id' => $cm->id, 'jobid' => $job->id, 'return' => 'browse'));
             $actions = '<a href="'.$editurl.'">'.$OUTPUT->pix_icon('t/edit', get_string('update')).'</a>';
         }
         if (has_capability('mod/jobtracker:manage', $context)) {

@@ -331,7 +331,7 @@ function jobtracker_getnumjobsreported($jobtrackerid, $status='*', $userid = '*'
  * @param object $context
  */
 function jobtracker_getadministrators($context) {
-    return get_users_by_capability($context, 'mod/jobtracker:manage', 'u.id,firstname,lastname,picture,email', 'lastname', '', '', '', '', false);
+    return get_users_by_capability($context, 'mod/jobtracker:manage', 'u.id,'.get_all_user_name_fields(true, 'u').',picture,email', 'lastname', '', '', '', '', false);
 }
 
 /**
@@ -339,7 +339,7 @@ function jobtracker_getadministrators($context) {
  * @param object $context
  */
 function jobtracker_getavailablefollowers($context) {
-    return get_users_by_capability($context, 'mod/jobtracker:follow', 'u.id,firstname,lastname,picture,email', 'lastname', '', '', '', '', false);
+    return get_users_by_capability($context, 'mod/jobtracker:follow', 'u.id,'.get_all_user_name_fields(true, 'u').',picture,email', 'lastname', '', '', '', '', false);
 }
 
 /**
@@ -352,7 +352,7 @@ function jobtracker_getfollowers($jobtracker) {
     $cm = get_coursemodule_from_instance('jobtracker', $jobtracker->id);
     $context = context_module::instance($cm->id);
 
-    return get_users_by_capability($context, 'mod/jobtracker:follow', 'u.id, u.lastname, u.firstname');
+    return get_users_by_capability($context, 'mod/jobtracker:follow', 'u.id,'.get_all_user_name_fields(true, 'u'));
 }
 
 /**
@@ -398,6 +398,7 @@ function jobtracker_submitanopportunity(&$jobtracker, &$data) {
     $job->jobtrackerid = $jobtracker->id;
     $job->status = $data->status;
     $job->userid = $data->userid;
+    $job->notesformat = FORMAT_HTML;
 
     // Fetch max actual priority.
     $maxpriority = $DB->get_field_select('jobtracker_job', 'MAX(resolutionpriority)', " jobtrackerid = ? GROUP BY jobtrackerid ", array($jobtracker->id));
@@ -727,7 +728,7 @@ function jobtracker_notify_submission($job, &$cm, $jobtracker = null) {
     }
     $context = context_module::instance($cm->id);
     // Todo : restrict to same group
-    $managers = get_users_by_capability($context, 'mod/jobtracker:follow', 'u.id,firstname,lastname,lang,email,emailstop,mailformat,mnethostid', 'lastname,firstname');
+    $managers = get_users_by_capability($context, 'mod/jobtracker:follow', 'u.id,'.get_all_user_name_fields(true, 'u').',lang,email,emailstop,mailformat,mnethostid', 'lastname,firstname');
 
     $by = $DB->get_record('user', array('id' => $job->userid));
     if (!empty($followers)) {
@@ -771,7 +772,7 @@ function jobtracker_notify_proposal($job, &$cm, $jobtracker = null) {
         $jobtracker = $DB->get_record('jobtracker', array('id' => $job->jobtrackerid));
     }
     $context = context_module::instance($cm->id);
-    $followers = get_users_by_capability($context, 'mod/jobtracker:follow', 'u.id,firstname,lastname,lang,email,emailstop,mailformat,mnethostid', 'lastname,firstname');
+    $followers = get_users_by_capability($context, 'mod/jobtracker:follow', 'u.id,'.get_all_user_name_fields(true, 'u').',lang,email,emailstop,mailformat,mnethostid', 'lastname,firstname');
 
     $by = $DB->get_record('user', array('id' => $job->userid));
     $vars = array(
@@ -1115,7 +1116,7 @@ function jobtracker_backtrack_stats_by_month(&$jobtracker) {
         $low = new StdClass();
         list($low->year, $low->month) = explode('-', $lowest);
         $dateiter = new jobtracker_date_iterator($low->year, $low->month);
-    
+
         // Scan table and snapshot job states.
         $current = $dateiter->current();
         while (strcmp($current, $highest) <= 0) {
@@ -1174,9 +1175,8 @@ function jobtracker_get_stats_by_user(&$jobtracker, $userclass, $from = null, $t
     $sql = "
         SELECT
             CONCAT(u.id, '-', j.status) as resultdid,
-            u.id,
-            u.firstname,
-            u.lastname,
+            u.id,".
+            get_all_user_name_fields(true, 'u').",
             count(*) as value,
             j.status
         FROM
@@ -1214,7 +1214,7 @@ function jobtracker_get_stats_by_assignee(&$jobtracker, $from = null, $to = null
 
     $coursecontext = context_course::instance($jobtracker->course);
 
-    $assignees = get_users_by_capability($coursecontext, 'mod/jobtracker:follow', 'u.id, u.firstname, u.lastname', 'u.lastname, u.firstname');
+    $assignees = get_users_by_capability($coursecontext, 'mod/jobtracker:follow', 'u.id,'.get_all_user_name_fields(true, 'u'), 'u.lastname, u.firstname');
 
     if (empty($assignees)) return array();
 
@@ -1228,7 +1228,7 @@ function jobtracker_get_stats_by_assignee(&$jobtracker, $from = null, $to = null
             return array();
         }
 
-        $groupClause = ($groups) ? " gm.groupid IN ({$groups}) " : '';
+        $groupClause = ($groups) ? " AND gm.groupid IN ({$groups}) " : '';
         $groupJoin = ($groups) ? " JOIN {groups_members} gm ON j.userid = gm.userid " : '';
     
         $sql = "

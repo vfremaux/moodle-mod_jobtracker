@@ -15,7 +15,7 @@ if (!defined('MOODLE_INTERNAL')) {
 
 echo "<br/>";
 echo $OUTPUT->heading(get_string('mywatches', 'jobtracker'));
-$OUTPUT->box_start('center', '80%', '', '', 'generalbox', 'bugreport');
+$OUTPUT->box_start('generalbox', 'bugreport');
 $mywatches = jobtracker_getwatches($jobtracker->id, $USER->id);
 ?>
 <center>

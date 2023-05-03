@@ -154,7 +154,7 @@ if (!empty($jobs)) {
         } elseif (has_capability('mod/jobtracker:workon', $context)) {
             $status = $renderer->status_select($jobtracker, $job, true);
             // $status = $FULLSTATUSKEYS[0 + $job->status].'<br/>'.html_writer::select($STATUSKEYS, "status{$job->id}", 0, array(), array('onchange' => "document.forms['manageform'].schanged{$job->id}.value = 1;"));
-            $managers = get_users_by_capability($context, 'mod/jobtracker:manage', 'u.id,lastname,firstname', 'lastname');
+            $managers = get_users_by_capability($context, 'mod/jobtracker:manage', 'u.id,'.get_all_user_name_fields(true, 'u'), 'lastname');
             foreach($managers as $manager) {
                 $managersmenu[$manager->id] = fullname($manager);
             }

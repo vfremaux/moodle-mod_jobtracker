@@ -204,7 +204,7 @@ if (has_capability('mod/jobtracker:managewatches', $context)) {
             <?php 
             echo get_string('addawatcher', 'jobtracker').':&nbsp;';
             $contextmodule = context_module::instance($cm->id);
-            $potentials = get_users_by_capability($contextmodule, 'mod/jobtracker:canbecced', 'u.id, firstname, lastname, picture, email,emailstop', 'lastname,firstname');
+            $potentials = get_users_by_capability($contextmodule, 'mod/jobtracker:canbecced', 'u.id,'.get_all_user_name_fields(true, 'u').',email,picture', 'lastname,firstname');
             $potentialsmenu = array();
             if ($potentials) {
                 foreach ($potentials as $potential) {

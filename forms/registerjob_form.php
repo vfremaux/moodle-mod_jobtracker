@@ -59,12 +59,12 @@ class RegisterJobForm extends moodleform {
             $cm = $DB->get_record('course_modules', array('id' => $this->_customdata['cmid']));
             if (groups_get_activity_groupmode($cm) != NOGROUPS) {
                 $mygroups = groups_get_my_groups();
-                $reporters = get_users_by_capability($this->context, 'mod/jobtracker:report', 'u.id, u.firstname, u.lastname', 'lastname,firstname', '', '', $mygroups);
+                $reporters = get_users_by_capability($this->context, 'mod/jobtracker:report', 'u.id,'.get_all_user_name_fields(true, 'u'), 'lastname,firstname', '', '', $mygroups);
             } else {
-                $reporters = get_users_by_capability($this->context, 'mod/jobtracker:report', 'u.id, u.firstname, u.lastname', 'lastname,firstname');
+                $reporters = get_users_by_capability($this->context, 'mod/jobtracker:report', 'u.id,'.get_all_user_name_fields(true, 'u'), 'lastname,firstname');
             }
             if ($reporters) {
-                foreach($reporters as $r) {
+                foreach ($reporters as $r) {
                     $reportermenu[$r->id] = fullname($r);
                 }
             }

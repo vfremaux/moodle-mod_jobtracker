@@ -90,17 +90,46 @@ class mod_jobtracker_renderer extends plugin_renderer_base {
     function menus(&$cm, &$jobtracker, $view, $screen, $userid = 0) {
         global $OUTPUT, $DB, $USER;
 
-        if (!$userid) $userid = $USER->id;
+        $cm = get_coursemodule_from_instance('jobtracker', $jobtracker->id);
+        $context = context_module::instance($cm->id);
+
+        if (!$userid) {
+            if (!has_capability('mod/jobtracker:viewallopportunities', $context)) {
+                $userid = $USER->id;
+            }
+        }
 
         $context = context_module::instance($cm->id);
 
         if ($userid) {
-            $totaljobs = $DB->count_records_select('jobtracker_job', "jobtrackerid = ? AND status <> ".JOBTRACK_CONCLUDED." AND status <> ".JOBTRACK_DEAD." AND userid = ? ", array($jobtracker->id, $userid));
-            $totalresolvedjobs = $DB->count_records_select('jobtracker_job', "jobtrackerid = ? AND (status = ".JOBTRACK_CONCLUDED." OR status = ".JOBTRACK_DEAD.") AND userid = ? ", array($jobtracker->id, $userid));
+            $select = "
+                jobtrackerid = ? AND
+                status <> ".JOBTRACK_CONCLUDED." AND
+                status <> ".JOBTRACK_DEAD." AND
+                userid = ?
+            ";
+            $totaljobs = $DB->count_records_select('jobtracker_job', $select, array($jobtracker->id, $userid));
+
+            $select = "
+                jobtrackerid = ? AND
+                (status = ".JOBTRACK_CONCLUDED." OR
+                status = ".JOBTRACK_DEAD.") AND
+                userid = ?
+            ";
+            $totalresolvedjobs = $DB->count_records_select('jobtracker_job', $select, array($jobtracker->id, $userid));
         } else {
             // TODO : need filter against group access constraints
-            $totaljobs = $DB->count_records_select('jobtracker_job', "jobtrackerid = ? AND status <> ".JOBTRACK_CONCLUDED." AND status <> ".JOBTRACK_DEAD, array($jobtracker->id));
-            $totalresolvedjobs = $DB->count_records_select('jobtracker_job', "jobtrackerid = ? AND (status = ".JOBTRACK_CONCLUDED." OR status = ".JOBTRACK_DEAD.")", array($jobtracker->id));
+            $select = "
+                jobtrackerid = ? AND
+                status <> ".JOBTRACK_CONCLUDED." AND
+                status <> ".JOBTRACK_DEAD;
+            $totaljobs = $DB->count_records_select('jobtracker_job', $select, array($jobtracker->id));
+            $select = "
+                jobtrackerid = ? AND
+                (status = ".JOBTRACK_CONCLUDED." OR
+                status = ".JOBTRACK_DEAD.")
+            ";
+            $totalresolvedjobs = $DB->count_records_select('jobtracker_job', $select, array($jobtracker->id));
         }
 
         // View opportunity list

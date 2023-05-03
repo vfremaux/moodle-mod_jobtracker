@@ -28,9 +28,11 @@ if (!defined('MOODLE_INTERNAL')) {
 }
 
 echo $OUTPUT->box_start('generalbox', 'bugreport'); 
+
+echo $OUTPUT->heading(get_string('summary', 'jobtracker'));
 ?>
 <center>
-<table cellpadding="3" width="100%">
+<table class="generaltable" width="100%">
     <tr valign="top">
         <td align="right" width="25%"><b><?php print_string('jobtrackername', 'jobtracker') ?>: </b></td>
         <td width="75%" align="left">

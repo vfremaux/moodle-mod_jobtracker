@@ -67,7 +67,7 @@ function jobtracker_get_my_trainees($filter, $mobileonly = true) {
                     // I am follower here. Now let's get mentees
                     $groupmode = groups_get_activity_groupmode($cm);
                     if ($groupmode == NOGROUPS) {
-                        $coursementees = get_users_by_capability($context, 'mod/jobtracker:workon', 'u.id, u.username, u.firstname, u.lastname, u.phone1, u.phone2');
+                        $coursementees = get_users_by_capability($context, 'mod/jobtracker:workon', 'u.id, u.username, '.get_all_user_name_fields(true, 'u').', u.phone1, u.phone2');
                         if ($coursementees) {
                             $coursescanned[] = $t->course;
                             foreach ($coursementees  as $cmid => $cmtee) {

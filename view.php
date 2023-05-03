@@ -230,11 +230,11 @@ if ($view == 'view') {
     }
     if ($result != -1) {
         switch ($screen) {
-            case 'summary':
-                include $CFG->dirroot.'/mod/jobtracker/views/admin_summary.html'; 
-                break;
             case 'manageelements':
                 include $CFG->dirroot.'/mod/jobtracker/views/admin_manageelements.html';
+                break;
+            default: // Summary.
+                include $CFG->dirroot.'/mod/jobtracker/views/admin_summary.html'; 
                 break;
         }
     }
